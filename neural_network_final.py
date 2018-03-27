@@ -9,7 +9,7 @@
 # From the (Last -1) layer I am extracting the features and flattening it to become of the shape (1,25088)
 
 # Now I have fed those flattened features into the clustering algorithm to cluster
-# Clustering Algorithm Used = K means
+# Clustering Algorithm Used = K means , Agglomerative
 
 #To Find the optimal no. of clusters , I have used the Elbow Curve approach
 
@@ -126,7 +126,38 @@ def agglomerative():
         img = cv2.imread("f/"+str(i), 1)
         cv2.imwrite(os.path.join(new_path , i), img)
 
+def som():
+    input_data = np.array(X_train)
+    sofmnet = algorithms.SOFM(
+    n_inputs=25088,
+    n_outputs=25,
+
+    step=0.5,
+    show_epoch=100,
+    shuffle_data=True,
+    verbose=True,
+
+    learning_radius=0,
+    features_grid=(5,5),
+    )
+
+    sofmnet.train(input_data,epochs=100);
+    plt.plot(input_data.T[0:1, :], input_data.T[1:2, :], 'ko')
+
+    print("> Start plotting")
+    plt.xlim(-1, 1.2)
+    plt.ylim(-1, 1.2)
+
+    plt.plot(sofmnet.weight[0:1, :], sofmnet.weight[1:2, :], 'bx')
+    plt.show()
+
+    for data in input_data:
+        print(sofmnet.predict(np.reshape(data, (2, 1)).T))
+
+
+
 if __name__ =="__main__":
     vgg16()
     #agglomerative()
+    #som()
     kmeans()
